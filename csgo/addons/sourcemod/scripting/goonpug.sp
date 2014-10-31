@@ -778,13 +778,13 @@ public Action:Command_Ready(client, args)
 {
     if (!NeedReadyUp())
     {
-        PrintToChat(client, "[GP] You don't need to ready up right now.");
+        PrintToChat(client, "[PixelMG] You don't need to ready up right now.");
         return Plugin_Handled;
     }
 
     if (g_playerReady[client])
     {
-        PrintToChat(client, "[GP] You are already ready.");
+        PrintToChat(client, "[PixelMG] You are already ready.");
     }
     else if (CountReady() < g_maxPlayers)
     {
@@ -812,7 +812,7 @@ public Action:Command_Ready(client, args)
 
                 if (assignedTeam == GP_TEAM_NONE)
                 {
-                    PrintToChat(client, "[GP] You are not assigned to a team and cannot ready up right now.");
+                    PrintToChat(client, "[PixelMG] You are not assigned to a team and cannot ready up right now.");
                     return Plugin_Handled;
                 }
             }
@@ -821,7 +821,7 @@ public Action:Command_Ready(client, args)
                 new team = GetClientTeam(client);
                 if (CS_TEAM_CT != team && CS_TEAM_T != team)
                 {
-                    PrintToChat(client, "[GP] You cannot ready up right now.");
+                    PrintToChat(client, "[PixelMG] You cannot ready up right now.");
                     return Plugin_Handled;
                 }
             }
@@ -830,11 +830,11 @@ public Action:Command_Ready(client, args)
         decl String:name[MAX_NAME_LENGTH];
         GetClientName(client, name, sizeof(name));
         g_playerReady[client] = true;
-        PrintToChatAll("[GP] %s is now ready.", name);
+        PrintToChatAll("[PixelMG] %s is now ready.", name);
     }
     else
     {
-        PrintToChat(client, "[GP] Maximum number of players already readied up.");
+        PrintToChat(client, "[PixelMG] Maximum number of players already readied up.");
     }
 
     return Plugin_Handled;
@@ -847,14 +847,14 @@ public Action:Command_Unready(client, args)
 {
     if (!NeedReadyUp())
     {
-        PrintToChat(client, "[GP] You don't need to ready up right now.");
+        PrintToChat(client, "[PixelMG] You don't need to ready up right now.");
         return Plugin_Handled;
     }
 
 
     if (!g_playerReady[client])
     {
-        PrintToChat(client, "[GP] You are already not ready.");
+        PrintToChat(client, "[PixelMG] You are already not ready.");
     }
     else
     {
@@ -862,14 +862,14 @@ public Action:Command_Unready(client, args)
         {
             case MS_PICK_CAPTAINS, MS_PICK_TEAMS:
             {
-                PrintToChat(client, "[GP] You cannot unready right now as it would break team picking.");
+                PrintToChat(client, "[PixelMG] You cannot unready right now as it would break team picking.");
             }
             default:
             {
                 decl String:name[MAX_NAME_LENGTH];
                 GetClientName(client, name, sizeof(name));
                 g_playerReady[client] = false;
-                PrintToChatAll("[GP] %s is no longer ready.", name);
+                PrintToChatAll("[PixelMG] %s is no longer ready.", name);
             }
         }
     }
@@ -909,7 +909,7 @@ public Action:Event_PlayerDisconnect(
             if (g_playerReady[client])
             {
                 ChangeMatchState(MS_PICK_CAPTAINS);
-                PrintToChatAll("[GP] Will restart picking teams when we have enough players...");
+                PrintToChatAll("[PixelMG] Will restart picking teams when we have enough players...");
                 StartReadyUp(false);
             }
         }
@@ -993,7 +993,7 @@ OnAllReady()
             SetConVarInt(pause, 0);
             new Handle:time = FindConVar("mp_halftime_duration");
             new timeval = GetConVarInt(time);
-            PrintToChatAll("[GP] All players ready, resuming match in %d seconds.", timeval);
+            PrintToChatAll("[PixelMG] All players ready, resuming match in %d seconds.", timeval);
             ChangeMatchState(MS_LIVE);
             g_period++;
         }
@@ -1081,7 +1081,7 @@ public Menu_MapVote(Handle:menu, MenuAction:action, param1, param2)
                 decl String:fileid[32];
                 GetMenuItem(menu, i, fileid, sizeof(fileid), _, mapname, sizeof(mapname));
 
-                PrintToChatAll("[GP] No votes received, using random map: %s.",
+                PrintToChatAll("[PixelMG] No votes received, using random map: %s.",
                                 mapname);
 
                 decl String:map[MAX_MAPNAME_LEN];
@@ -1132,7 +1132,7 @@ public VoteHandler_MapVote(Handle:menu, num_votes, num_clients, const client_inf
         decl String:mapname[MAX_MAPNAME_LEN];
         decl String:fileid[32];
         GetMenuItem(menu, item_info[0][VOTEINFO_ITEM_INDEX], fileid, sizeof(fileid), _, mapname, sizeof(mapname));
-        PrintToChatAll("[GP] %s won with %0.f%% of the vote", mapname, (winningvotes / float(num_votes) * 100.0));
+        PrintToChatAll("[PixelMG] %s won with %0.f%% of the vote", mapname, (winningvotes / float(num_votes) * 100.0));
 
         decl String:map[MAX_MAPNAME_LEN];
         FormatMapName(map, sizeof(map), fileid, mapname);
@@ -1257,14 +1257,14 @@ ChooseCaptains()
 
     if (count < 2)
     {
-        PrintToChatAll("[GP] Not enough valid captains. Scrambling teams.");
+        PrintToChatAll("[PixelMG] Not enough valid captains. Scrambling teams.");
         // TODO: If count < 2, just scramble teams
         CloseHandle(menu);
         return;
     }
     else if (count == 2)
     {
-        PrintToChatAll("[GP] Only 2 possible choices for captains. Skipping vote.");
+        PrintToChatAll("[PixelMG] Only 2 possible choices for captains. Skipping vote.");
         GetMenuItem(menu, 0, g_capt1, sizeof(g_capt1));
         GetMenuItem(menu, 1, g_capt2, sizeof(g_capt2));
         CloseHandle(menu);
@@ -1272,8 +1272,8 @@ ChooseCaptains()
         return;
     }
 
-    PrintToChatAll("[GP] Now voting for team captains.");
-    PrintToChatAll("[GP] Top two vote getters will be selected.");
+    PrintToChatAll("[PixelMG] Now voting for team captains.");
+    PrintToChatAll("[PixelMG] Top two vote getters will be selected.");
 
     SetMenuExitButton(menu, false);
     SetVoteResultCallback(menu, VoteHandler_CaptainsVote);
@@ -1342,8 +1342,8 @@ public VoteHandler_CaptainsVote(Handle:menu, num_votes, num_clients, const clien
     GetMenuItem(menu, item_info[0][VOTEINFO_ITEM_INDEX], g_capt1, sizeof(g_capt1));
     GetMenuItem(menu, item_info[1][VOTEINFO_ITEM_INDEX], g_capt2, sizeof(g_capt2));
 
-    PrintToChatAll("[GP] %s will be a captain (%d votes).", g_capt1, item_info[0][VOTEINFO_ITEM_VOTES]);
-    PrintToChatAll("[GP] %s will be a captain (%d votes).", g_capt2, item_info[1][VOTEINFO_ITEM_VOTES]);
+    PrintToChatAll("[PixelMG] %s will be a captain (%d votes).", g_capt1, item_info[0][VOTEINFO_ITEM_VOTES]);
+    PrintToChatAll("[PixelMG] %s will be a captain (%d votes).", g_capt2, item_info[1][VOTEINFO_ITEM_VOTES]);
 }
 
 /**
@@ -1405,8 +1405,8 @@ DetermineFirstPick()
             }
         }
 
-        PrintToChatAll("[GP] %s's GP Skill: %.2f", g_capt1, capt1rating);
-        PrintToChatAll("[GP] %s's GP Skill: %.2f", g_capt2, capt2rating);
+        PrintToChatAll("[PixelMG] %s's GP Skill: %.2f", g_capt1, capt1rating);
+        PrintToChatAll("[PixelMG] %s's GP Skill: %.2f", g_capt2, capt2rating);
 
         if (capt1rating > capt2rating)
         {
@@ -1430,7 +1430,7 @@ DetermineFirstPick()
         }
     }
 
-    PrintToChatAll("[GP] %s will pick first. %s will pick sides", g_capt1, g_capt2);
+    PrintToChatAll("[PixelMG] %s will pick first. %s will pick sides", g_capt1, g_capt2);
     g_whosePick = 0;
 
     ChooseSides();
@@ -1464,7 +1464,7 @@ public Menu_Sides(Handle:menu, MenuAction:action, param1, param2)
             }
             decl String:name[MAX_NAME_LENGTH];
             GetClientName(param1, name, sizeof(name));
-            PrintToChatAll("[GP] %s will take %s side first.", name, info);
+            PrintToChatAll("[PixelMG] %s will take %s side first.", name, info);
             LogAction(param1, -1, "\"%L\" chose side \"%s\"", param1, info);
         }
         case MenuAction_End:
@@ -1671,7 +1671,7 @@ public Action:Timer_PickTeams(Handle:timer)
 
     if ((GetArraySize(hTeam1) + GetArraySize(hTeam2)) == g_maxPlayers)
     {
-        PrintToChatAll("[GP] Done picking teams.");
+        PrintToChatAll("[PixelMG] Done picking teams.");
 
         decl String:curmap[MAX_MAPNAME_LEN];
         GetCurrentMap(curmap, sizeof(curmap));
@@ -1680,7 +1680,7 @@ public Action:Timer_PickTeams(Handle:timer)
         ChangeMatchState(MS_PRE_LIVE);
         if (!StrEqual(nextmap, curmap))
         {
-            PrintToChatAll("[GP] Changing map to %s in 10 seconds...", nextmap);
+            PrintToChatAll("[PixelMG] Changing map to %s in 10 seconds...", nextmap);
             CreateTimer(10.0, Timer_ChangeMap);
         }
         else
@@ -1702,11 +1702,11 @@ public Action:Timer_PickTeams(Handle:timer)
 
     if (g_whosePick == 0)
     {
-        PrintToChatAll("[GP] %s's pick...", g_capt1);
+        PrintToChatAll("[PixelMG] %s's pick...", g_capt1);
     }
     else
     {
-        PrintToChatAll("[GP] %s's pick...", g_capt2);
+        PrintToChatAll("[PixelMG] %s's pick...", g_capt2);
     }
     hTeamPickMenu = BuildPickMenu(pickNum);
     DisplayMenu(hTeamPickMenu, g_captClients[g_whosePick], 0);
@@ -1774,13 +1774,13 @@ public Menu_PickPlayer(Handle:menu, MenuAction:action, param1, param2)
 
             if (g_whosePick == 0)
             {
-                PrintToChatAll("[GP] %s picks %s.", g_capt1, pickName);
+                PrintToChatAll("[PixelMG] %s picks %s.", g_capt1, pickName);
                 LogAction(g_captClients[0], pick, "\"%L\" picked \"%L\"", g_captClients[0], pick);
                 GpTeam_AssignPlayerTeam(pick, GP_TEAM_1);
             }
             else
             {
-                PrintToChatAll("[GP] %s picks %s.", g_capt2, pickName);
+                PrintToChatAll("[PixelMG] %s picks %s.", g_capt2, pickName);
                 LogAction(g_captClients[1], pick, "\"%L\" picked \"%L\"", g_captClients[1], pick);
                 GpTeam_AssignPlayerTeam(pick, GP_TEAM_2);
             }
@@ -1883,7 +1883,7 @@ public Action:Command_Jointeam(client, const String:command[], argc)
             }
             if (assignedTeam == GP_TEAM_NONE)
             {
-                PrintToChat(client, "[GP] You cannot join a team until you are picked");
+                PrintToChat(client, "[PixelMG] You cannot join a team until you are picked");
             }
             GPChangeClientTeam(client, assignedTeam);
 
@@ -1913,8 +1913,8 @@ public Action:Command_Jointeam(client, const String:command[], argc)
             {
                 if (!TryJoinTeam(client, assignedTeam))
                 {
-                    PrintToChat(client, "[GP] You are assigned to a team but it is currently full.");
-                    PrintToChat(client, "[GP] A substitute player must leave the game or join the spectators before you can rejoin.");
+                    PrintToChat(client, "[PixelMG] You are assigned to a team but it is currently full.");
+                    PrintToChat(client, "[PixelMG] A substitute player must leave the game or join the spectators before you can rejoin.");
 
                     new cash = GetEntProp(client, Prop_Send, "m_iAccount");
                     SetTrieValue(hSaveCash, auth, cash);
@@ -1955,11 +1955,11 @@ public Action:Command_Jointeam(client, const String:command[], argc)
                 if (assignedTeam == GP_TEAM_NONE)
                 {
                     if (team == CS_TEAM_CT)
-                        PrintToChat(client, "[GP] The CT team is current full.");
+                        PrintToChat(client, "[PixelMG] The CT team is current full.");
                     else if (team == CS_TEAM_T)
-                        PrintToChat(client, "[GP] The T team is current full.");
+                        PrintToChat(client, "[PixelMG] The T team is current full.");
                     else
-                        PrintToChat(client, "[GP] You cannot auto-assign right now.");
+                        PrintToChat(client, "[PixelMG] You cannot auto-assign right now.");
                     GPChangeClientTeam(client, assignedTeam);
                 }
             }
@@ -2008,7 +2008,7 @@ CountActivePlayers(GpTeam:team)
 bool:TryJoinTeam(client, GpTeam:team)
 {
     new count = CountActivePlayers(team);
-    PrintToServer("[GP] Got %d/%d active players for GP team %d", count, g_maxPlayers / 2, team);
+    PrintToServer("[PixelMG] Got %d/%d active players for GP team %d", count, g_maxPlayers / 2, team);
     if (count < (g_maxPlayers / 2))
     {
         GPChangeClientTeam(client, team);
@@ -2034,7 +2034,7 @@ StartLiveMatch()
     g_period = 1;
     ServerCommand("mp_warmup_end\n");
     ServerCommand("exec goonpug_pug.cfg\n");
-    PrintToChatAll("[GP] Live after restart!!!");
+    PrintToChatAll("[PixelMG] Live after restart!!!");
     ServerCommand("mp_restartgame 10\n");
     CreateTimer(11.0, Timer_Lo3);
 }
@@ -2158,8 +2158,8 @@ UploadDemo(const String:filename[])
     curl_formadd(hForm, CURLFORM_COPYNAME, "file", CURLFORM_FILE, filename, CURLFORM_END);
     curl_easy_setopt_handle(hCurl, CURLOPT_HTTPPOST, hForm);
     curl_easy_setopt_string(hCurl, CURLOPT_URL, "http://goonpug-demos.s3.amazonaws.com");
-    PrintToServer("[GP] Uploading %s to S3...", filename);
-    LogMessage("[GP] Uploading %s to S3...", filename);
+    PrintToServer("[PixelMG] Uploading %s to S3...", filename);
+    LogMessage("[PixelMG] Uploading %s to S3...", filename);
     WritePackCell(hPack, hForm);
     WritePackString(hPack, filename);
     curl_easy_perform_thread(hCurl, UploadDemoCb, hPack);
@@ -2208,7 +2208,7 @@ public Action:Event_AnnouncePhaseEnd(Handle:event, const String:name[], bool:don
 {
     if (g_period == 1)
     {
-        PrintToChatAll("[GP] Halftime. Will resume match when all players are ready.");
+        PrintToChatAll("[PixelMG] Halftime. Will resume match when all players are ready.");
         ChangeMatchState(MS_HALFTIME);
 
         ClearTrie(hSaveCash);
@@ -2273,13 +2273,13 @@ PostMatch(bool:abort=false)
         }
         else
         {
-            PrintToChatAll("[GP] Will switch to warmup map when GOTV broadcast completes (%0.f seconds)", delay);
+            PrintToChatAll("[PixelMG] Will switch to warmup map when GOTV broadcast completes (%0.f seconds)", delay);
         }
         CreateTimer(delay, Timer_ChangeMap);
     }
     else
     {
-        PrintToChatAll("[GP] Skipping warmup map change.");
+        PrintToChatAll("[PixelMG] Skipping warmup map change.");
         ChangeMatchState(MS_WARMUP);
         ServerCommand("exec goonpug_warmup.cfg\n");
         StartReadyUp(true);
@@ -2345,19 +2345,19 @@ public VoteHandler_OvertimeVote(Handle:menu, num_votes, num_clients, const clien
     
     if (StrEqual(result, "Yes") && winningvotes > required)
     {
-        PrintToChatAll("[GP] Vote to play OT wins (%0.f%%).", (winningvotes / float(num_votes) * 100.0));
+        PrintToChatAll("[PixelMG] Vote to play OT wins (%0.f%%).", (winningvotes / float(num_votes) * 100.0));
         ChangeMatchState(MS_OT);
         new Handle:pause = FindConVar("mp_halftime_pausetimer");
         SetConVarInt(pause, 0);
         new Handle:time = FindConVar("mp_halftime_duration");
         new timeval = GetConVarInt(time);
-        PrintToChatAll("[GP] Starting OT in in %d seconds.", timeval);
+        PrintToChatAll("[PixelMG] Starting OT in in %d seconds.", timeval);
         g_period++;
     }
     else
     {
-        PrintToChatAll("[GP] Vote to play OT fails.");
-        PrintToChatAll("[GP] Match ended.");
+        PrintToChatAll("[PixelMG] Vote to play OT fails.");
+        PrintToChatAll("[PixelMG] Match ended.");
         PostMatch();
     }
 }
@@ -2405,12 +2405,12 @@ public Action:Command_AbortMatch(client, args)
     {
         case MS_PRE_LIVE, MS_LIVE, MS_HALFTIME, MS_OT:
         {
-            PrintToChatAll("[GP] Aborting current match.");
+            PrintToChatAll("[PixelMG] Aborting current match.");
             PostMatch(true);
         }
         default:
         {
-            PrintToChatAll("[GP] You can't do that right now.");
+            PrintToChatAll("[PixelMG] You can't do that right now.");
         }
     }
 
@@ -2423,7 +2423,7 @@ public Action:Command_RestartMatch(client, args)
     {
         case MS_LIVE, MS_HALFTIME, MS_OT:
         {
-            PrintToChatAll("[GP] Restarting current match.");
+            PrintToChatAll("[PixelMG] Restarting current match.");
             LogToGame("GoonPUG triggered \"Restart_Match\"");
             if (g_period % 2 == 0)
             {
@@ -2433,7 +2433,7 @@ public Action:Command_RestartMatch(client, args)
         }
         default:
         {
-            PrintToChatAll("[GP] You can't do that right now.");
+            PrintToChatAll("[PixelMG] You can't do that right now.");
         }
     }
 
@@ -2446,12 +2446,12 @@ public Action:Command_EndMatch(client, args)
     {
         case MS_LIVE, MS_HALFTIME, MS_OT:
         {
-            PrintToChatAll("[GP] Ending current match.");
+            PrintToChatAll("[PixelMG] Ending current match.");
             PostMatch();
         }
         default:
         {
-            PrintToChatAll("[GP] You can't do that right now.");
+            PrintToChatAll("[PixelMG] You can't do that right now.");
         }
     }
 
